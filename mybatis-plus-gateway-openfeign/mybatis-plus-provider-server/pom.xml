@@ -4,19 +4,19 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.ml</groupId>
-        <artifactId>druid-gateway-openfeign</artifactId>
+        <artifactId>mybatis-plus-gateway-openfeign</artifactId>
         <version>1.0</version>
     </parent>
 
-    <artifactId>consumer-server</artifactId>
+    <artifactId>mybatis-plus-provider-server</artifactId>
     <version>1.0</version>
-    <name>consumer-server</name>
-    <description>consumer-server</description>
+    <name>mybatis-plus-provider-server</name>
+    <description>mybatis-plus-provider-server</description>
 
     <dependencies>
         <dependency>
             <groupId>com.ml</groupId>
-            <artifactId>common</artifactId>
+            <artifactId>mybatis-plus-common</artifactId>
             <version>1.0</version>
         </dependency>
         <dependency>
@@ -26,10 +26,6 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-bootstrap</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
@@ -45,7 +41,20 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-loadbalancer</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <version>3.4.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid-spring-boot-starter</artifactId>
+            <version>1.2.3</version>
+        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>

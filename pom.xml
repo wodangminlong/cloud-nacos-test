@@ -5,6 +5,7 @@
 
     <modules>
         <module>druid-gateway-openfeign</module>
+        <module>mybatis-plus-gateway-openfeign</module>
     </modules>
 
     <parent>

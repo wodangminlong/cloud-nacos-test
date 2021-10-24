@@ -4,10 +4,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <modules>
-        <module>common</module>
-        <module>gateway-server</module>
-        <module>provider-server</module>
-        <module>consumer-server</module>
+        <module>mybatis-plus-common</module>
+        <module>mybatis-plus-gateway-server</module>
+        <module>mybatis-plus-provider-server</module>
+        <module>mybatis-plus-consumer-server</module>
     </modules>
 
     <parent>
@@ -16,10 +16,10 @@
         <version>1.0</version>
     </parent>
 
-    <artifactId>druid-gateway-openfeign</artifactId>
+    <artifactId>mybatis-plus-gateway-openfeign</artifactId>
     <packaging>pom</packaging>
     <version>1.0</version>
-    <name>druid-gateway-openfeign</name>
-    <description>druid-gateway-openfeign</description>
+    <name>mybatis-plus-gateway-openfeign</name>
+    <description>mybatis-plus-gateway-openfeign</description>
 
 </project>

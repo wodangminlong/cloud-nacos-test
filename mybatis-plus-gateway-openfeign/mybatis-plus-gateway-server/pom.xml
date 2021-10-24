@@ -4,32 +4,25 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.ml</groupId>
-        <artifactId>druid-gateway-openfeign</artifactId>
+        <artifactId>mybatis-plus-gateway-openfeign</artifactId>
         <version>1.0</version>
     </parent>
 
-    <artifactId>consumer-server</artifactId>
+    <artifactId>mybatis-plus-gateway-server</artifactId>
     <version>1.0</version>
-    <name>consumer-server</name>
-    <description>consumer-server</description>
+    <name>mybatis-plus-gateway-server</name>
+    <description>mybatis-plus-gateway-server</description>
 
     <dependencies>
         <dependency>
             <groupId>com.ml</groupId>
-            <artifactId>common</artifactId>
+            <artifactId>mybatis-plus-common</artifactId>
             <version>1.0</version>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
+
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-bootstrap</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-openfeign</artifactId>
+            <artifactId>spring-cloud-starter-gateway</artifactId>
         </dependency>
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
@@ -45,11 +38,23 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-loadbalancer</artifactId>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.github.vladimir-bukhtoyarov/bucket4j-core -->
+        <!-- Control request frequency -->
+        <dependency>
+            <groupId>com.github.vladimir-bukhtoyarov</groupId>
+            <artifactId>bucket4j-core</artifactId>
+            <version>6.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-bootstrap</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
+
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>

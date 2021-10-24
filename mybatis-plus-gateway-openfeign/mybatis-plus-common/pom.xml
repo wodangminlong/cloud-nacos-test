@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.16.10</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+    <parent>
+        <groupId>com.ml</groupId>
+        <artifactId>mybatis-plus-gateway-openfeign</artifactId>
+        <version>1.0</version>
+    </parent>
+
+    <artifactId>mybatis-plus-common</artifactId>
+    <version>1.0</version>
+    <name>mybatis-plus-common</name>
+    <description>mybatis-plus-common</description>
+
+</project>
