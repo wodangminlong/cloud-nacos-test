@@ -8,6 +8,7 @@
         <module>gateway-server</module>
         <module>provider-server</module>
         <module>consumer-server</module>
+        <module>stream-server</module>
     </modules>
 
     <parent>

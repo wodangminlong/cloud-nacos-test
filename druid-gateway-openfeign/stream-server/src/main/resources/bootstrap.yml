@@ -1,0 +1,16 @@
+server:
+  port: 8085
+
+spring:
+  profiles:
+    active: dev
+  application:
+    name: stream-server
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.17.128:8848
+      config:
+        server-addr: 192.168.17.128:8848
+        file-extension: yaml
+        prefix: stream-server

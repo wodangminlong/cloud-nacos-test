@@ -1,5 +1,7 @@
 package com.ml;
 
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 
 /**
@@ -8,10 +10,11 @@ import java.io.Serializable;
  * @author Administrator
  * @date 2021/10/23 12:05
  */
+@NoArgsConstructor
 public class ApiResponse implements Serializable {
 
-    private final int code;
-    private final String msg;
+    private int code;
+    private String msg;
     private transient Object data;
 
     public ApiResponse(int code, String msg) {
