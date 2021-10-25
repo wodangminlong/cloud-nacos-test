@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.NotBlank;
 
 /**
  * TestController
@@ -40,6 +41,16 @@ public class TestController extends ExceptionAdvice {
     @DeleteMapping("test/{id}")
     public ApiResponse testDelete(@PathVariable(name = "id") Long id) {
         return testFeignClient.testDelete(id);
+    }
+
+    @GetMapping("test1")
+    public ApiResponse test1(@NotBlank(message = "name cannot be empty") String name) {
+        return ApiResponse.success(name);
+    }
+
+    @GetMapping("test2")
+    public ApiResponse test2(@RequestParam(value = "name") String[] name) {
+        return ApiResponse.success(name);
     }
 
 }
