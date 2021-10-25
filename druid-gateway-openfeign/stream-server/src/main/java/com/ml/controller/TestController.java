@@ -32,7 +32,7 @@ public class TestController extends ExceptionAdvice {
     @GetMapping("test/{name}")
     public ApiResponse test(@PathVariable(name = "name") String name) {
         // test 10 seconds delay message
-        testMqProvider.sendDelayMessage(name, 10 * 1000);
+        testMqProvider.sendDelayMessage(name);
         return ApiResponse.success();
     }
 

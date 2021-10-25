@@ -28,6 +28,8 @@ public class TestMqProvider implements RabbitTemplate.ConfirmCallback, RabbitTem
     public String testLazyExchange;
     @Value("${test.lazy.key:}")
     public String testLazyKey;
+    @Value("${test.lazy.delay:}")
+    public Integer testLazyDelayTime;
 
     @Override
     public void confirm(CorrelationData correlationData, boolean b, String s) {
@@ -50,17 +52,16 @@ public class TestMqProvider implements RabbitTemplate.ConfirmCallback, RabbitTem
      * send delay message
      *
      * @param content   content
-     * @param delayTime delayTime
      */
-    public void sendDelayMessage(String content, final int delayTime) {
+    public void sendDelayMessage(String content) {
         rabbitTemplate.setConfirmCallback(this);
         rabbitTemplate.setReturnsCallback(this);
         CorrelationData correlationData = new CorrelationData(UUID.randomUUID().toString());
         rabbitTemplate.convertAndSend(testLazyExchange, testLazyKey, content, message -> {
                     message.getMessageProperties().setDeliveryMode(MessageDeliveryMode.PERSISTENT);
-                    message.getMessageProperties().setDelay(delayTime);
+                    message.getMessageProperties().setDelay(testLazyDelayTime);
                     return message;
                 }, correlationData);
-        log.info("send delay message success. delay time: {}", delayTime);
+        log.info("send delay message success. delay time: {}", testLazyDelayTime);
     }
 }
