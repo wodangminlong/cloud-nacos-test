@@ -39,6 +39,7 @@ public class ApiErrorCode {
     public static final ApiErrorCode VOID_REQUEST = new ApiErrorCode(400, "VOID REQUEST");
     public static final ApiErrorCode PARAMETER_ERROR = new ApiErrorCode(400, "PARAMETER ERROR");
     public static final ApiErrorCode REQUESTS_ARE_TOO_FREQUENT = new ApiErrorCode(403, "REQUESTS ARE TOO FREQUENT");
+    public static final ApiErrorCode FORBIDDEN = new ApiErrorCode(403, "FORBIDDEN REQUEST");
 
 
 }

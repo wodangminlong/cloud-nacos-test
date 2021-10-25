@@ -6,9 +6,11 @@ import com.ml.openfeign.TestFeignClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.NotBlank;
 
 /**
  * test controller
@@ -39,6 +41,14 @@ public class TestController extends ExceptionAdvice {
         return ApiResponse.success(testFeignClient.test(id));
     }
 
+    @GetMapping("test1")
+    public ApiResponse test1(@NotBlank(message = "name cannot be empty") String name) {
+        return ApiResponse.success(name);
+    }
 
+    @GetMapping("test2")
+    public ApiResponse test2(@RequestParam(value = "name") String[] name) {
+        return ApiResponse.success(name);
+    }
 
 }
