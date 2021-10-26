@@ -8,6 +8,7 @@
         <module>mybatis-plus-gateway-server</module>
         <module>mybatis-plus-provider-server</module>
         <module>mybatis-plus-consumer-server</module>
+        <module>mybatis-plus-stream-server</module>
     </modules>
 
     <parent>

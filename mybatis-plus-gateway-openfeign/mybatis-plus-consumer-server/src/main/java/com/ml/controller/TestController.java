@@ -3,6 +3,7 @@ package com.ml.controller;
 import com.ml.ApiResponse;
 import com.ml.exception.ExceptionAdvice;
 import com.ml.openfeign.TestFeignClient;
+import com.ml.openfeign.TestMqFeignClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,6 +52,14 @@ public class TestController extends ExceptionAdvice {
     @GetMapping("test2")
     public ApiResponse test2(@RequestParam(value = "name") String[] name) {
         return ApiResponse.success(name);
+    }
+
+    @Resource
+    private TestMqFeignClient testMqFeignClient;
+
+    @GetMapping("test3")
+    public ApiResponse test3(@NotBlank(message = "name cannot be empty") String name) {
+        return testMqFeignClient.test(name);
     }
 
 }

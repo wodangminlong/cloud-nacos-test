@@ -1,11 +1,11 @@
 server:
-  port: 8085
+  port: 9085
 
 spring:
   profiles:
     active: dev
   application:
-    name: stream-server
+    name: mybatis-plus-stream-server
   cloud:
     nacos:
       discovery:
@@ -13,4 +13,4 @@ spring:
       config:
         server-addr: 192.168.17.128:8848
         file-extension: yaml
-        prefix: stream-server
+        prefix: mybatis-plus-stream-server
