@@ -1,9 +1,23 @@
-# Getting Started
+### nacos gateway yaml
 
-### Reference Documentation
-For further reference, please consider the following sections:
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: consumer-server
+        uri: lb://consumer-server
+        predicates:
+          - Path=/consumer/**
+          - Method=GET,POST,PUT,DELETE
+        filters:
+          - StripPrefix=1
 
-* [Official Apache Maven documentation](https://maven.apache.org/guides/index.html)
-* [Spring Boot Maven Plugin Reference Guide](https://docs.spring.io/spring-boot/docs/2.5.6/maven-plugin/reference/html/)
-* [Create an OCI image](https://docs.spring.io/spring-boot/docs/2.5.6/maven-plugin/reference/html/#build-image)
+logging:
+  file:
+    path: /Users/ml/springcloud/nacos/mybatis-plus/gateway
 
+### end

@@ -1,6 +1,7 @@
 package com.ml.serviceimpl;
 
-import com.ml.mapper.TestMapper;
+import com.ml.mapper.master.TestMapper;
+import com.ml.mapper.slave.SlaveTestMapper;
 import com.ml.model.TestModel;
 import com.ml.service.TestService;
 import org.springframework.stereotype.Service;
@@ -19,10 +20,12 @@ public class TestServiceImpl implements TestService {
 
     @Resource
     private TestMapper testMapper;
+    @Resource
+    private SlaveTestMapper slaveTestMapper;
 
     @Override
     public List<TestModel> listGetTest() {
-        return testMapper.selectList(null);
+        return slaveTestMapper.selectList(null);
     }
 
     @Override
