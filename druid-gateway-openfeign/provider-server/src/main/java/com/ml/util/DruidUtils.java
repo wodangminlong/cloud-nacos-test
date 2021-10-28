@@ -21,28 +21,55 @@ import java.util.Map;
 public class DruidUtils {
 
     /**
-     * data source
+     * master data source
      */
-    private DataSource dataSource = null;
+    private DataSource masterDataSource = null;
+    /**
+     * slave data source
+     */
+    private DataSource slaveDataSource = null;
 
-    @Value("${spring.datasource.username}")
-    private String username;
-    @Value("${spring.datasource.password}")
-    private String password;
-    @Value("${spring.datasource.url}")
-    private String url;
+    @Value("${spring.datasource.master.username}")
+    private String masterUsername;
+    @Value("${spring.datasource.master.password}")
+    private String masterPassword;
+    @Value("${spring.datasource.master.url}")
+    private String masterUrl;
+
+    @Value("${spring.datasource.slave.username}")
+    private String slaveUsername;
+    @Value("${spring.datasource.slave.password}")
+    private String slavePassword;
+    @Value("${spring.datasource.slave.url}")
+    private String slaveUrl;
 
     /**
      * init pool
      *
+     * @param isMaster isMaster true: master false: slave
      * @return dataSource
      * @throws Exception exception
      */
-    public synchronized DataSource initPool() throws Exception {
-        if (dataSource != null) {
-            return dataSource;
+    public synchronized DataSource initPool(boolean isMaster) throws Exception {
+        String username;
+        String password;
+        String url;
+        if (isMaster) {
+            if (masterDataSource != null) {
+                return masterDataSource;
+            }
+            username = masterUsername;
+            password = masterPassword;
+            url = masterUrl;
+        } else {
+            if (slaveDataSource != null) {
+                return slaveDataSource;
+            }
+            username = slaveUsername;
+            password = slavePassword;
+            url = slaveUrl;
         }
-        Map<String, String> druidMap = new HashMap<>(30);
+        Map<String, String> druidMap = new HashMap<>(22);
         druidMap.put(DruidDataSourceFactory.PROP_USERNAME, username);
         druidMap.put(DruidDataSourceFactory.PROP_PASSWORD, password);
         druidMap.put(DruidDataSourceFactory.PROP_URL, url);
@@ -59,18 +86,23 @@ public class DruidUtils {
         druidMap.put(DruidDataSourceFactory.PROP_TESTONRETURN, "false");
         druidMap.put(DruidDataSourceFactory.PROP_POOLPREPAREDSTATEMENTS, "true");
         druidMap.put(DruidDataSourceFactory.PROP_FILTERS, "stat");
-        dataSource = DruidDataSourceFactory.createDataSource(druidMap);
-        return dataSource;
+        if (isMaster) {
+            masterDataSource = DruidDataSourceFactory.createDataSource(druidMap);
+            return masterDataSource;
+        }
+        slaveDataSource = DruidDataSourceFactory.createDataSource(druidMap);
+        return slaveDataSource;
     }
 
     /**
      * get connection
      *
+     * @param isMaster isMaster true: master false: slave
      * @return  connection
      */
-    Connection getConnection() {
+    Connection getConnection(boolean isMaster) {
         try {
-            return initPool().getConnection();
+            return initPool(isMaster).getConnection();
         }catch (Exception e){
             log.error("DruidUtils getConnection has error: ", e);
         }

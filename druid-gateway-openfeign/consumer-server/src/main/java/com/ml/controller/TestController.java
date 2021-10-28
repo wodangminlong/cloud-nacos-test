@@ -5,10 +5,7 @@ import com.ml.exception.ExceptionAdvice;
 import com.ml.openfeign.TestFeignClient;
 import com.ml.openfeign.TestMqFeignClient;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotBlank;
@@ -58,6 +55,27 @@ public class TestController extends ExceptionAdvice {
     @GetMapping("test3")
     public ApiResponse test3(@NotBlank(message = "name cannot be empty") String name) {
         return testMqFeignClient.test(name);
+    }
+
+    @GetMapping("listGetTest")
+    public ApiResponse listGetTest() {
+        return testFeignClient.listGetTest();
+    }
+
+    @PostMapping("test/{name}")
+    public ApiResponse testPost(@PathVariable(name = "name") String name) {
+        return testFeignClient.testPost(name);
+    }
+
+    @PutMapping("test/{id}/{name}")
+    public ApiResponse testPut(@PathVariable(name = "id") Long id,
+                               @PathVariable(name = "name") String name) {
+        return testFeignClient.testPut(id, name);
+    }
+
+    @DeleteMapping("test/{id}")
+    public ApiResponse testDelete(@PathVariable(name = "id") Long id) {
+        return testFeignClient.testDelete(id);
     }
 
 }

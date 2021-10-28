@@ -6,7 +6,10 @@ import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * mysql db visit utils
@@ -22,6 +25,18 @@ public class MysqlBaseUtils {
     private DruidUtils druidUtils;
 
     /**
+     * get list
+     *
+     * @param sql    sql
+     * @param params params are object array
+     * @return list
+     * @throws SQLException SQLException
+     */
+    public List<Map<String, Object>> getList(String sql, List<Object> params) throws SQLException {
+        return getList(sql, params, false);
+    }
+
+    /**
      * get one column by row
      *
      * @param sql        sql
@@ -30,12 +45,55 @@ public class MysqlBaseUtils {
      * @throws SQLException SQLException
      */
     public String getOneColumnByRow(String sql, List<Object> params) throws SQLException {
+        return getOneColumnByRow(sql, params, false);
+    }
+
+    /**
+     * get list
+     *
+     * @param sql        sql
+     * @param params     params are object array
+     * @param isMaster isMaster true: master false: slave
+     * @return list
+     * @throws SQLException SQLException
+     */
+    public List<Map<String, Object>> getList(String sql, List<Object> params, boolean isMaster) throws SQLException {
         getPreparedSql(sql, params);
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            conn = druidUtils.getConnection();
+            conn = druidUtils.getConnection(isMaster);
+            if (null != conn) {
+                ps = conn.prepareStatement(sql);
+                params2ps(params, ps);
+                rs = ps.executeQuery();
+                return getRows(rs);
+            }
+        } finally {
+            safeCloseResultSet(rs);
+            safeCloseStat(ps);
+            closeConnection(conn);
+        }
+        return new ArrayList<>();
+    }
+
+    /**
+     * get one column by row
+     *
+     * @param sql        sql
+     * @param params     params are object array
+     * @param isMaster isMaster true: master false: slave
+     * @return string
+     * @throws SQLException SQLException
+     */
+    public String getOneColumnByRow(String sql, List<Object> params, boolean isMaster) throws SQLException {
+        getPreparedSql(sql, params);
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            conn = druidUtils.getConnection(isMaster);
             if (null != conn) {
                 ps = conn.prepareStatement(sql);
                 params2ps(params, ps);
@@ -50,6 +108,33 @@ public class MysqlBaseUtils {
             safeCloseStat(ps);
             closeConnection(conn);
         }
+    }
+
+    /**
+     * execute insert、update、delete and return the number of rows affected
+     * insert、update、delete must be used by master db
+     *
+     * @param sql        sql
+     * @param params     params are object array
+     * @return int
+     * @throws SQLException SQLException
+     */
+    public int updateSql(String sql, List<Object> params) throws SQLException {
+        getPreparedSql(sql, params);
+        Connection conn = null;
+        PreparedStatement ps = null;
+        try {
+            conn = druidUtils.getConnection(true);
+            if (null != conn) {
+                ps = conn.prepareStatement(sql);
+                params2ps(params, ps);
+                return ps.executeUpdate();
+            }
+        } finally {
+            safeCloseStat(ps);
+            closeConnection(conn);
+        }
+        return -1;
     }
 
     /**
@@ -109,6 +194,39 @@ public class MysqlBaseUtils {
                 ps.setString(parameterIndex, paramsObject.toString());
             }
         }
+    }
+
+    /**
+     * get rows by resultSet
+     *
+     * @param rs rs
+     * @return list
+     * @throws SQLException SQLException
+     */
+    private static List<Map<String, Object>> getRows(ResultSet rs) throws SQLException {
+        List<Map<String, Object>> rows = new ArrayList<>();
+        while (rs.next()) {
+            rows.add(getRowMap(rs));
+        }
+        return rows;
+    }
+
+    /**
+     * get rowMap by resultSet
+     *
+     * @param rs rs
+     * @return map
+     * @throws SQLException SQLException
+     */
+    private static Map<String, Object> getRowMap(ResultSet rs) throws SQLException {
+        ResultSetMetaData rSmd = rs.getMetaData();
+        Map<String, Object> row = new HashMap<>(16);
+        for (int i = 1; i <= rSmd.getColumnCount(); i++) {
+            String colName = rSmd.getColumnLabel(i);
+            Object colValue = rs.getObject(i);
+            row.put(colName, colValue);
+        }
+        return row;
     }
 
     /**

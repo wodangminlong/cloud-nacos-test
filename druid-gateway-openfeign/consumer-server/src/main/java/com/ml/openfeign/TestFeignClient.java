@@ -1,8 +1,8 @@
 package com.ml.openfeign;
 
+import com.ml.ApiResponse;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * test feign client
@@ -21,5 +21,42 @@ public interface TestFeignClient {
      */
     @GetMapping(value = "/test/{id}")
     String test(@PathVariable(name = "id") Integer id);
+
+    /**
+     * listGetTest
+     *
+     * @return  ApiResponse
+     */
+    @GetMapping(value = "/listGetTest")
+    ApiResponse listGetTest();
+
+    /**
+     * test post
+     *
+     * @param name  name
+     * @return  ApiResponse
+     */
+    @PostMapping("test/{name}")
+    ApiResponse testPost(@PathVariable(name = "name") String name);
+
+    /**
+     * test put
+     *
+     * @param id    id
+     * @param name  name
+     * @return  ApiResponse
+     */
+    @PutMapping("test/{id}/{name}")
+    ApiResponse testPut(@PathVariable(name = "id") Long id,
+                        @PathVariable(name = "name") String name);
+
+    /**
+     * test delete
+     *
+     * @param id    id
+     * @return  ApiResponse
+     */
+    @DeleteMapping("test/{id}")
+    ApiResponse testDelete(@PathVariable(name = "id") Long id);
 
 }

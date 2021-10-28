@@ -12,7 +12,7 @@ spring:
         uri: lb://consumer-server
         predicates:
           - Path=/consumer/**
-          - Method=GET,POST
+          - Method=GET,POST,PUT,DELETE
         filters:
           - StripPrefix=1
 

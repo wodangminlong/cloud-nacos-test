@@ -2,9 +2,14 @@
 
 spring:
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/dev_test?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&autoReconnectForPools=true&noAccessToProcedureBodies=true&testOnBorrow=true&validationQuery=select 1
-    username: root
-    password: root
+    master:
+      url: jdbc:mysql://192.168.17.131:3306/dev_test?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&autoReconnectForPools=true&noAccessToProcedureBodies=true&testOnBorrow=true&validationQuery=select 1
+      username: test
+      password: test
+    slave:
+      url: jdbc:mysql://192.168.17.132:3306/dev_test?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&autoReconnectForPools=true&noAccessToProcedureBodies=true&testOnBorrow=true&validationQuery=select 1
+      username: test
+      password: test
 
 logging:
   file:
