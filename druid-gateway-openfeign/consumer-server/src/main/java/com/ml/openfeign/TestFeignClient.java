@@ -59,4 +59,24 @@ public interface TestFeignClient {
     @DeleteMapping("test/{id}")
     ApiResponse testDelete(@PathVariable(name = "id") Long id);
 
+    /**
+     * add order
+     *
+     * @param orderId   order id
+     * @param goodId    good id
+     * @return  ApiResponse
+     */
+    @GetMapping("addOrder/{orderId}/{goodId}")
+    ApiResponse addOrder(@PathVariable(name = "orderId") String orderId,
+                         @PathVariable(name = "goodId") String goodId);
+
+    /**
+     * addSecKill
+     *
+     * @param goodId    good id
+     * @return  ApiResponse
+     */
+    @GetMapping("addSecKill/{goodId}")
+    ApiResponse addSecKill(@PathVariable(name = "goodId") String goodId);
+
 }

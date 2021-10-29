@@ -28,7 +28,7 @@ public class MysqlBaseUtils {
      * get list
      *
      * @param sql    sql
-     * @param params params are object array
+     * @param params paramsList
      * @return list
      * @throws SQLException SQLException
      */
@@ -40,7 +40,7 @@ public class MysqlBaseUtils {
      * get one column by row
      *
      * @param sql        sql
-     * @param params     params are object array
+     * @param params     paramsList
      * @return string
      * @throws SQLException SQLException
      */
@@ -52,7 +52,7 @@ public class MysqlBaseUtils {
      * get list
      *
      * @param sql        sql
-     * @param params     params are object array
+     * @param params     paramsList
      * @param isMaster isMaster true: master false: slave
      * @return list
      * @throws SQLException SQLException
@@ -82,7 +82,7 @@ public class MysqlBaseUtils {
      * get one column by row
      *
      * @param sql        sql
-     * @param params     params are object array
+     * @param params     paramsList
      * @param isMaster isMaster true: master false: slave
      * @return string
      * @throws SQLException SQLException
@@ -115,7 +115,7 @@ public class MysqlBaseUtils {
      * insert、update、delete must be used by master db
      *
      * @param sql        sql
-     * @param params     params are object array
+     * @param params     paramsList
      * @return int
      * @throws SQLException SQLException
      */
@@ -138,10 +138,54 @@ public class MysqlBaseUtils {
     }
 
     /**
+     * batch execute insert、update、delete and return true or false
+     * ps: this function can execute single database. more than one tables insert、update、delete
+     *
+     * @param sqlList    sqlList
+     * @param paramsList paramsList
+     * @return boolean
+     */
+    public boolean batchUpdateSql(List<String> sqlList, List<List<Object>> paramsList) {
+        Connection conn = null;
+        try {
+            conn = druidUtils.getConnection(true);
+            if (null != conn) {
+                conn.setAutoCommit(false);
+                for (int j = 0; j < sqlList.size(); j++) {
+                    PreparedStatement ps = null;
+                    try {
+                        ps = conn.prepareStatement(sqlList.get(j));
+                        List<Object> params = paramsList.get(j);
+                        getPreparedSql(sqlList.get(j), params);
+                        params2ps(params, ps);
+                        ps.execute();
+                    } finally {
+                        safeCloseStat(ps);
+                    }
+                }
+                conn.commit();
+                return true;
+            }
+        } catch (Exception se) {
+            log.error("batchUpdateSql has error", se);
+            try {
+                if (conn != null) {
+                    conn.rollback();
+                }
+            } catch (SQLException e) {
+                log.error("batchUpdateSql conn rollback has error", e);
+            }
+        } finally {
+            closeConnection(conn);
+        }
+        return false;
+    }
+
+    /**
      * get sql
      *
      * @param sql    sql
-     * @param params params are object array
+     * @param params paramsList
      */
     private static void getPreparedSql(String sql, List<Object> params) {
         if (CollectionUtils.isEmpty(params)) {
@@ -170,7 +214,7 @@ public class MysqlBaseUtils {
     /**
      * get ps by params
      *
-     * @param params params are object array
+     * @param params paramsList
      * @param ps     ps
      * @throws SQLException SQLException
      */

@@ -35,11 +35,12 @@ public class ApiErrorCode {
      * system level error
      */
     public static final ApiErrorCode SUCCESS = new ApiErrorCode(0, "SUCCESS");
-    public static final ApiErrorCode SYSTEM_ERROR = new ApiErrorCode(500, "SYSTEM ERROR");
-    public static final ApiErrorCode VOID_REQUEST = new ApiErrorCode(400, "VOID REQUEST");
-    public static final ApiErrorCode PARAMETER_ERROR = new ApiErrorCode(400, "PARAMETER ERROR");
-    public static final ApiErrorCode REQUESTS_ARE_TOO_FREQUENT = new ApiErrorCode(403, "REQUESTS ARE TOO FREQUENT");
-    public static final ApiErrorCode FORBIDDEN = new ApiErrorCode(403, "FORBIDDEN REQUEST");
+    public static final ApiErrorCode SYSTEM_ERROR = new ApiErrorCode(5000, "SYSTEM ERROR");
+    public static final ApiErrorCode VOID_REQUEST = new ApiErrorCode(4000, "VOID REQUEST");
+    public static final ApiErrorCode PARAMETER_ERROR = new ApiErrorCode(4001, "PARAMETER ERROR");
+    public static final ApiErrorCode REQUESTS_ARE_TOO_FREQUENT = new ApiErrorCode(4002, "REQUESTS ARE TOO FREQUENT");
+    public static final ApiErrorCode FORBIDDEN = new ApiErrorCode(4003, "FORBIDDEN REQUEST");
+    public static final ApiErrorCode THE_GOODS_HAVE_BEEN_SOLD_OUT = new ApiErrorCode(4004, "THE_GOODS_HAVE_BEEN_SOLD_OUT");
 
 
 }
