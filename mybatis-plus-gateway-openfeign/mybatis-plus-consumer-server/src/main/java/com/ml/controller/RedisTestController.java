@@ -19,7 +19,7 @@ import javax.annotation.Resource;
  * redis test controller
  *
  * @author dml
- * @date 2021/10/29 10:00
+ * @date 2021/10/29 15:36
  */
 @Slf4j
 @RestController
@@ -66,7 +66,7 @@ public class RedisTestController extends ExceptionAdvice {
      */
     @GetMapping("incr/{id}/{incrValue}")
     public ApiResponse redisTestIncrement(@PathVariable(name = "id") String id,
-                                     @PathVariable(name = "incrValue") long incrValue) {
+                                          @PathVariable(name = "incrValue") long incrValue) {
         Long incrResult = redisUtils.incr(id, incrValue);
         return ApiResponse.success(incrResult);
     }
