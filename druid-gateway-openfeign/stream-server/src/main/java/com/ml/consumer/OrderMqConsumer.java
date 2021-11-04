@@ -31,7 +31,7 @@ public class OrderMqConsumer {
 
     @RabbitListener(queues = "${order.add.queue}")
     @RabbitHandler
-    public void orderAddDelayQueueMessage(Message msg, Channel channel) throws IOException {
+    public void orderAddQueueMessage(Message msg, Channel channel) throws IOException {
         byte[] msgBody = msg.getBody();
         if (Objects.isNull(msgBody)) {
             return;
@@ -50,6 +50,22 @@ public class OrderMqConsumer {
             apiResponse = orderFeignClient.addSecKill(goodId);
             log.info("orderFeignClient.addSecKill result: {}", JSON.toJSONString(apiResponse));
         }
+        long deliveryTag = msg.getMessageProperties().getDeliveryTag();
+        channel.basicAck(deliveryTag, true);
+    }
+
+
+    @RabbitListener(queues = "${order.add.lazy.queue}")
+    @RabbitHandler
+    public void orderAddDelayQueueMessage(Message msg, Channel channel) throws IOException {
+        byte[] msgBody = msg.getBody();
+        if (Objects.isNull(msgBody)) {
+            return;
+        }
+        String message = new String(msgBody, StandardCharsets.UTF_8);
+        log.info("order mq consumer message: {}", message);
+        ApiResponse apiResponse = orderFeignClient.closeOrder(message);
+        log.info("orderFeignClient.closeOrder result: {}", JSON.toJSONString(apiResponse));
         long deliveryTag = msg.getMessageProperties().getDeliveryTag();
         channel.basicAck(deliveryTag, true);
     }

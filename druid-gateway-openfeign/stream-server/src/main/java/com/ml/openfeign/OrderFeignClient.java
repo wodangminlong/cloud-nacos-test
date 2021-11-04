@@ -34,4 +34,13 @@ public interface OrderFeignClient {
     @GetMapping("addSecKill/{goodId}")
     ApiResponse addSecKill(@PathVariable(name = "goodId") String goodId);
 
+    /**
+     * close order
+     *
+     * @param orderId   order id
+     * @return  ApiResponse
+     */
+    @GetMapping("closeOrder/{orderId}")
+    ApiResponse closeOrder(@PathVariable(name = "orderId") String orderId);
+
 }

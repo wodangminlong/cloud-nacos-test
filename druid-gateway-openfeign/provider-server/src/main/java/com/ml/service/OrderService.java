@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -30,7 +31,7 @@ public class OrderService {
      * @return  boolean
      */
     public boolean addOrderInfo(String orderId, String goodId) {
-        String addOrderSql = "INSERT INTO tb_order (id,order_id,good_id,create_time) VALUES (?,?,?,NOW(3));";
+        String addOrderSql = "INSERT INTO tb_order (id,order_id,good_id,create_time,status) VALUES (?,?,?,NOW(3),0);";
         String addSecKillSql = "INSERT INTO tb_seckill (id,good_id,create_time,status) VALUES (?,?,NOW(3),1);";
         List<List<Object>> paramsGroupList = new ArrayList<>();
         paramsGroupList.add(Arrays.asList(IdWorkerUtils.nextId(), orderId, goodId));
@@ -50,6 +51,18 @@ public class OrderService {
         String addSecKillSql = "INSERT INTO tb_seckill (id,good_id,create_time,status) VALUES (?,?,NOW(3),0);";
         return mysqlBaseUtils.updateSql(addSecKillSql, Arrays.asList(IdWorkerUtils.nextId(), goodId));
 
+    }
+
+    /**
+     * close order
+     *
+     * @param orderId   order id
+     * @return  int
+     * @throws SQLException SQLException
+     */
+    public int closeOrder(String orderId) throws SQLException {
+        String updateSql = "UPDATE tb_order SET status = 2 WHERE order_id = ? AND status = 0;";
+        return mysqlBaseUtils.updateSql(updateSql, Collections.singletonList(orderId));
     }
 
 }

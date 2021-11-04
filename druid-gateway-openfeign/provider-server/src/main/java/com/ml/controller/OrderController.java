@@ -43,4 +43,13 @@ public class OrderController extends ExceptionAdvice {
         return ApiResponse.error();
     }
 
+    @GetMapping("closeOrder/{orderId}")
+    public ApiResponse closeOrder(@PathVariable(name = "orderId") String orderId) throws SQLException {
+        int result = orderService.closeOrder(orderId);
+        if (result > 0) {
+            return ApiResponse.success();
+        }
+        return ApiResponse.error();
+    }
+
 }
