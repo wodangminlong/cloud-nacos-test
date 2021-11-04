@@ -3,6 +3,7 @@ package com.ml.consumer;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.ml.ApiResponse;
+import com.ml.openfeign.GoodFeignClient;
 import com.ml.openfeign.OrderFeignClient;
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,9 @@ public class OrderMqConsumer {
 
     @Resource
     private OrderFeignClient orderFeignClient;
+
+    @Resource
+    private GoodFeignClient goodFeignClient;
 
     @RabbitListener(queues = "${order.add.queue}")
     @RabbitHandler
@@ -64,8 +68,11 @@ public class OrderMqConsumer {
         }
         String message = new String(msgBody, StandardCharsets.UTF_8);
         log.info("order mq consumer message: {}", message);
-        ApiResponse apiResponse = orderFeignClient.closeOrder(message);
+        JSONObject jsonObject = JSON.parseObject(message);
+        ApiResponse apiResponse = orderFeignClient.closeOrder(jsonObject.getString("orderId"));
         log.info("orderFeignClient.closeOrder result: {}", JSON.toJSONString(apiResponse));
+        apiResponse = goodFeignClient.goodAdd(jsonObject.getString("goodId"), 1L);
+        log.info("orderFeignClient.goodAdd result: {}", JSON.toJSONString(apiResponse));
         long deliveryTag = msg.getMessageProperties().getDeliveryTag();
         channel.basicAck(deliveryTag, true);
     }

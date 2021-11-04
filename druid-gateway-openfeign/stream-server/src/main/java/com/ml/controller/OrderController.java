@@ -32,8 +32,9 @@ public class OrderController extends ExceptionAdvice {
         jsonObject.put("orderId", orderId);
         jsonObject.put("goodId", goodId);
         jsonObject.put("type", 0);
-        orderMqProvider.sendMessage(JSON.toJSONString(jsonObject));
-        orderMqProvider.sendDelayMessage(orderId);
+        String message = JSON.toJSONString(jsonObject);
+        orderMqProvider.sendMessage(message);
+        orderMqProvider.sendDelayMessage(message);
         return ApiResponse.success();
     }
 

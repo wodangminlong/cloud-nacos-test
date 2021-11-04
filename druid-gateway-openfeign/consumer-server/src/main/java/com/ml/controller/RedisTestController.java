@@ -103,6 +103,21 @@ public class RedisTestController extends ExceptionAdvice {
     @Resource
     private OrderIdUtils orderIdUtils;
 
+    @GetMapping("good/{id}")
+    public ApiResponse goodInit(@PathVariable(name = "id") String id) {
+        int initNum = 10;
+        redisUtils.expire(id, String.valueOf(initNum), 60 * 60 * 24L);
+        return ApiResponse.success();
+    }
+
+    @GetMapping("good/{id}/{num}")
+    public ApiResponse goodAdd(@PathVariable(name = "id") String id,
+                               @PathVariable(name = "num") Long num) {
+        Long goodAddResult = redisUtils.incr(id, num);
+        return ApiResponse.success(goodAddResult);
+    }
+
+
     @GetMapping("order/{goodId}")
     public ApiResponse redisTestOrder(@PathVariable(name = "goodId") String goodId) {
         String surplusGoodsNumStr = redisUtils.get(goodId);
@@ -116,6 +131,10 @@ public class RedisTestController extends ExceptionAdvice {
                 boolean getLock = redisUtils.lock(keyPrefix + goodId, keyPrefix + goodId, 500 * 1000L);
                 if (getLock) {
                     log.info("get lock");
+                    surplusGoodsNumStr = redisUtils.get(goodId);
+                    if (StringUtils.isNotBlank(surplusGoodsNumStr) && Long.parseLong(surplusGoodsNumStr) <= 0) {
+                        return soldOut(goodId);
+                    }
                     long surplusGoodsNum = redisUtils.decr(goodId, 1L);
                     if (surplusGoodsNum >= 0) {
                         log.info("user get goods , surplusGoodsNum: {}", surplusGoodsNum);
