@@ -1,5 +1,7 @@
 package com.ml.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.ml.ApiResponse;
 import com.ml.exception.ExceptionAdvice;
 import com.ml.provider.OrderMqProvider;
@@ -23,9 +25,23 @@ public class OrderController extends ExceptionAdvice {
     @Resource
     private OrderMqProvider orderMqProvider;
 
-    @GetMapping("orderAdd/{name}")
-    public ApiResponse orderAdd(@PathVariable(name = "name") String name) {
-        orderMqProvider.sendDelayMessage(name);
+    @GetMapping("orderAdd/{orderId}/{goodId}")
+    public ApiResponse orderAdd(@PathVariable(name = "orderId") String orderId,
+                                @PathVariable(name = "goodId") String goodId) {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("orderId", orderId);
+        jsonObject.put("goodId", goodId);
+        jsonObject.put("type", 0);
+        orderMqProvider.sendMessage(JSON.toJSONString(jsonObject));
+        return ApiResponse.success();
+    }
+
+    @GetMapping("secKillAdd/{goodId}")
+    public ApiResponse secKillAdd(@PathVariable(name = "goodId") String goodId) {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("goodId", goodId);
+        jsonObject.put("type", 1);
+        orderMqProvider.sendMessage(JSON.toJSONString(jsonObject));
         return ApiResponse.success();
     }
 

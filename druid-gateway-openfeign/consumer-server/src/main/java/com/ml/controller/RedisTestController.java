@@ -4,7 +4,7 @@ import com.alibaba.cloud.commons.lang.StringUtils;
 import com.ml.ApiErrorCode;
 import com.ml.ApiResponse;
 import com.ml.exception.ExceptionAdvice;
-import com.ml.openfeign.TestFeignClient;
+import com.ml.openfeign.TestMqFeignClient;
 import com.ml.util.OrderIdUtils;
 import com.ml.util.RedisUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -98,7 +98,7 @@ public class RedisTestController extends ExceptionAdvice {
     }
 
     @Resource
-    private TestFeignClient testFeignClient;
+    private TestMqFeignClient testMqFeignClient;
 
     @Resource
     private OrderIdUtils orderIdUtils;
@@ -119,7 +119,7 @@ public class RedisTestController extends ExceptionAdvice {
                     long surplusGoodsNum = redisUtils.decr(goodId, 1L);
                     if (surplusGoodsNum >= 0) {
                         log.info("user get goods , surplusGoodsNum: {}", surplusGoodsNum);
-                        return testFeignClient.addOrder(orderIdUtils.getOrderId(), goodId);
+                        return testMqFeignClient.orderAdd(orderIdUtils.getOrderId(), goodId);
                     }
                     return soldOut(goodId);
                 }
@@ -142,7 +142,7 @@ public class RedisTestController extends ExceptionAdvice {
      */
     private ApiResponse soldOut(String goodId) {
         log.info("the goods have been sold out");
-        ApiResponse apiResponse = testFeignClient.addSecKill(goodId);
+        ApiResponse apiResponse = testMqFeignClient.secKillAdd(goodId);
         if (apiResponse.getCode() == ApiErrorCode.SUCCESS.getCode()) {
             return ApiResponse.error(ApiErrorCode.THE_GOODS_HAVE_BEEN_SOLD_OUT);
         }

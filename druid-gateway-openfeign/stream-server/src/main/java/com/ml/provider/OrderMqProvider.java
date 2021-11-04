@@ -1,7 +1,6 @@
 package com.ml.provider;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.MessageDeliveryMode;
 import org.springframework.amqp.core.ReturnedMessage;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -9,7 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.UUID;
 
 /**
  * OrderMqConsumer
@@ -28,8 +26,6 @@ public class OrderMqProvider implements RabbitTemplate.ConfirmCallback, RabbitTe
     public String orderAddExchange;
     @Value("${order.add.key:}")
     public String orderAddKey;
-    @Value("${order.add.delay:}")
-    public Integer orderAddDelayTime;
 
     @Override
     public void confirm(CorrelationData correlationData, boolean b, String s) {
@@ -53,16 +49,11 @@ public class OrderMqProvider implements RabbitTemplate.ConfirmCallback, RabbitTe
      *
      * @param content   content
      */
-    public void sendDelayMessage(String content) {
+    public void sendMessage(String content) {
         rabbitTemplate.setConfirmCallback(this);
         rabbitTemplate.setReturnsCallback(this);
-        CorrelationData correlationData = new CorrelationData(UUID.randomUUID().toString());
-        rabbitTemplate.convertAndSend(orderAddExchange, orderAddKey, content, message -> {
-            message.getMessageProperties().setDeliveryMode(MessageDeliveryMode.PERSISTENT);
-            message.getMessageProperties().setDelay(orderAddDelayTime);
-            return message;
-        }, correlationData);
-        log.info("send delay message success. delay time: {}", orderAddDelayTime);
+        rabbitTemplate.convertAndSend(orderAddExchange, orderAddKey, content);
+        log.info("send message success.");
     }
 
 }
