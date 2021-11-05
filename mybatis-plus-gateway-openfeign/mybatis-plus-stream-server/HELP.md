@@ -1,10 +1,36 @@
-# Getting Started
+### nacos mybatis-plus stream yaml
 
-### Reference Documentation
+spring:  
+  rabbitmq:
+    host: 192.168.17.131
+    port: 5672
+    username: admin
+    password: admin
+    virtual-host: /
+    listener:
+      simple:
+        acknowledge-mode: manual
 
-For further reference, please consider the following sections:
+test:
+  lazy:
+    exchange: MybatisPlus.test.lazy.Exchange
+    queue: MybatisPlus.test.lazy.Queue
+    key: MybatisPlus.test.lazy.Key
+    delay: 10000
 
-* [Official Apache Maven documentation](https://maven.apache.org/guides/index.html)
-* [Spring Boot Maven Plugin Reference Guide](https://docs.spring.io/spring-boot/docs/2.5.6/maven-plugin/reference/html/)
-* [Create an OCI image](https://docs.spring.io/spring-boot/docs/2.5.6/maven-plugin/reference/html/#build-image)
+order:
+  add:
+    exchange: MybatisPlus.order.add.Exchange
+    queue: MybatisPlus.order.add.Queue
+    key: MybatisPlus.order.add.Key
+    lazy:
+      exchange: MybatisPlus.order.add.delay.Exchange
+      queue: MybatisPlus.order.add.delay.Queue
+      key: MybatisPlus.order.add.delay.Key
+      delay: 300000
 
+logging:
+  file:
+    path: /Users/ml/springcloud/nacos/mybatis-plus/mybatis-plus-stream
+
+### end

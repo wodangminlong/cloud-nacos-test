@@ -1,10 +1,36 @@
-# Getting Started
+### nacos stream yaml
 
-### Reference Documentation
+spring:  
+  rabbitmq:
+    host: 192.168.17.131
+    port: 5672
+    username: admin
+    password: admin
+    virtual-host: /
+    listener:
+      simple:
+        acknowledge-mode: manual
 
-For further reference, please consider the following sections:
+test:
+  lazy:
+    exchange: Druid.test.lazy.Exchange
+    queue: Druid.test.lazy.Queue
+    key: Druid.test.lazy.Key
+    delay: 10000
 
-* [Official Apache Maven documentation](https://maven.apache.org/guides/index.html)
-* [Spring Boot Maven Plugin Reference Guide](https://docs.spring.io/spring-boot/docs/2.5.6/maven-plugin/reference/html/)
-* [Create an OCI image](https://docs.spring.io/spring-boot/docs/2.5.6/maven-plugin/reference/html/#build-image)
+order:
+  add:
+    exchange: Druid.order.add.Exchange
+    queue: Druid.order.add.Queue
+    key: Druid.order.add.Key
+    lazy:
+      exchange: Druid.order.add.delay.Exchange
+      queue: Druid.order.add.delay.Queue
+      key: Druid.order.add.delay.Key
+      delay: 300000
 
+logging:
+  file:
+    path: /Users/ml/springcloud/nacos/druid/stream
+
+### end
