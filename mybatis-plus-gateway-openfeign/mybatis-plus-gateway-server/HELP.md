@@ -1,4 +1,4 @@
-### nacos gateway yaml
+### nacos mybatis-plus gateway yaml
 
 spring:
   cloud:
@@ -8,8 +8,15 @@ spring:
           enabled: true
           lower-case-service-id: true
       routes:
-        - id: consumer-server
-        uri: lb://consumer-server
+        - id: mybatis-plus-provider-server
+        uri: lb://mybatis-plus-provider-server
+        predicates:
+          - Path=/provider/**
+          - Method=GET,POST
+        filters:
+          - StripPrefix=1
+        - id: mybatis-plus-consumer-server
+        uri: lb://mybatis-plus-consumer-server
         predicates:
           - Path=/consumer/**
           - Method=GET,POST,PUT,DELETE
