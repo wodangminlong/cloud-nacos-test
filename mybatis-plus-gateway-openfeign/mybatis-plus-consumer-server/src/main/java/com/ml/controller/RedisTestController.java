@@ -4,7 +4,7 @@ import com.alibaba.cloud.commons.lang.StringUtils;
 import com.ml.ApiErrorCode;
 import com.ml.ApiResponse;
 import com.ml.exception.ExceptionAdvice;
-import com.ml.openfeign.TestFeignClient;
+import com.ml.openfeign.TestMqFeignClient;
 import com.ml.util.OrderIdUtils;
 import com.ml.util.RedisUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -98,10 +98,24 @@ public class RedisTestController extends ExceptionAdvice {
     }
 
     @Resource
-    private TestFeignClient testFeignClient;
+    private TestMqFeignClient testMqFeignClient;
 
     @Resource
     private OrderIdUtils orderIdUtils;
+
+    @GetMapping("good/{id}")
+    public ApiResponse goodInit(@PathVariable(name = "id") String id) {
+        int initNum = 10;
+        redisUtils.expire(id, String.valueOf(initNum), 60 * 60 * 24L);
+        return ApiResponse.success();
+    }
+
+    @GetMapping("good/{id}/{num}")
+    public ApiResponse goodAdd(@PathVariable(name = "id") String id,
+                               @PathVariable(name = "num") Long num) {
+        Long goodAddResult = redisUtils.incr(id, num);
+        return ApiResponse.success(goodAddResult);
+    }
 
     @GetMapping("order/{goodId}")
     public ApiResponse redisTestOrder(@PathVariable(name = "goodId") String goodId) {
@@ -117,11 +131,12 @@ public class RedisTestController extends ExceptionAdvice {
                 if (getLock) {
                     log.info("get lock");
                     long surplusGoodsNum = redisUtils.decr(goodId, 1L);
-                    if (surplusGoodsNum >= 0) {
-                        log.info("user get goods , surplusGoodsNum: {}", surplusGoodsNum);
-                        return testFeignClient.addOrder(orderIdUtils.getOrderId(), goodId);
+                    if (surplusGoodsNum < 0) {
+                        redisUtils.set(goodId, String.valueOf(0));
+                        return soldOut(goodId);
                     }
-                    return soldOut(goodId);
+                    log.info("user get goods , surplusGoodsNum: {}", surplusGoodsNum);
+                    return testMqFeignClient.orderAdd(orderIdUtils.getOrderId(), goodId);
                 }
                 log.warn("can not get lock, sleep 20 millisecond...");
                 Thread.sleep(20L);
@@ -142,7 +157,7 @@ public class RedisTestController extends ExceptionAdvice {
      */
     private ApiResponse soldOut(String goodId) {
         log.info("the goods have been sold out");
-        ApiResponse apiResponse = testFeignClient.addSecKill(goodId);
+        ApiResponse apiResponse = testMqFeignClient.secKillAdd(goodId);
         if (apiResponse.getCode() == ApiErrorCode.SUCCESS.getCode()) {
             return ApiResponse.error(ApiErrorCode.THE_GOODS_HAVE_BEEN_SOLD_OUT);
         }

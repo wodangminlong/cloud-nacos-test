@@ -31,4 +31,6 @@ public class OrderModel {
     private String goodId;
 
     private Date createTime;
+
+    private Byte status;
 }

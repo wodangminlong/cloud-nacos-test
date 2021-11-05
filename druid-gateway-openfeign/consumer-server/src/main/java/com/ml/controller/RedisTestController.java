@@ -131,16 +131,13 @@ public class RedisTestController extends ExceptionAdvice {
                 boolean getLock = redisUtils.lock(keyPrefix + goodId, keyPrefix + goodId, 500 * 1000L);
                 if (getLock) {
                     log.info("get lock");
-                    surplusGoodsNumStr = redisUtils.get(goodId);
-                    if (StringUtils.isNotBlank(surplusGoodsNumStr) && Long.parseLong(surplusGoodsNumStr) <= 0) {
+                    long surplusGoodsNum = redisUtils.decr(goodId, 1L);
+                    if (surplusGoodsNum < 0) {
+                        redisUtils.set(goodId, String.valueOf(0));
                         return soldOut(goodId);
                     }
-                    long surplusGoodsNum = redisUtils.decr(goodId, 1L);
-                    if (surplusGoodsNum >= 0) {
-                        log.info("user get goods , surplusGoodsNum: {}", surplusGoodsNum);
-                        return testMqFeignClient.orderAdd(orderIdUtils.getOrderId(), goodId);
-                    }
-                    return soldOut(goodId);
+                    log.info("user get goods , surplusGoodsNum: {}", surplusGoodsNum);
+                    return testMqFeignClient.orderAdd(orderIdUtils.getOrderId(), goodId);
                 }
                 log.warn("can not get lock, sleep 20 millisecond...");
                 Thread.sleep(20L);

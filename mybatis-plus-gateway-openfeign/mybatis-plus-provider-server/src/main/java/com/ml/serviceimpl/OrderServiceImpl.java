@@ -1,5 +1,6 @@
 package com.ml.serviceimpl;
 
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.ml.mapper.master.OrderMapper;
 import com.ml.mapper.master.SecKillMapper;
 import com.ml.model.OrderModel;
@@ -34,6 +35,7 @@ public class OrderServiceImpl implements OrderService {
         orderModel.setGoodId(goodId);
         Date date = new Date();
         orderModel.setCreateTime(date);
+        orderModel.setStatus((byte) 0);
         orderMapper.insert(orderModel);
         SecKillModel secKillModel = new SecKillModel();
         secKillModel.setGoodId(goodId);
@@ -50,5 +52,14 @@ public class OrderServiceImpl implements OrderService {
         secKillModel.setCreateTime(new Date());
         secKillModel.setStatus(0);
         return secKillMapper.insert(secKillModel);
+    }
+
+    @Override
+    public int closeOrder(String orderId) {
+        LambdaUpdateWrapper<OrderModel> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(OrderModel::getOrderId, orderId)
+                .eq(OrderModel::getStatus, (byte)0)
+                .set(OrderModel::getStatus, (byte)2);
+        return orderMapper.update(null, updateWrapper);
     }
 }

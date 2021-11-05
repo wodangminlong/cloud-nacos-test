@@ -9,8 +9,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -26,14 +24,13 @@ public class TestMqConsumer {
     @RabbitListener(queues = "${test.lazy.queue}")
     @RabbitHandler
     public void testDelayQueueMessage(Message msg, Channel channel) throws IOException {
-        long deliveryTag = msg.getMessageProperties().getDeliveryTag();
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        log.info("test delay queue receive {}, time: {}", new String(msg.getBody()), format.format(new Date()));
-        if (Objects.isNull(msg.getBody())) {
+        byte[] msgBody = msg.getBody();
+        if (Objects.isNull(msgBody)) {
             return;
         }
-        String message = new String(msg.getBody(), StandardCharsets.UTF_8);
+        String message = new String(msgBody, StandardCharsets.UTF_8);
         log.info("test mq consumer message: {}", message);
+        long deliveryTag = msg.getMessageProperties().getDeliveryTag();
         channel.basicAck(deliveryTag, true);
     }
 

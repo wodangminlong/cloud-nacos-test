@@ -25,4 +25,12 @@ public interface OrderService {
      */
     int addSecKillInfo(String goodId);
 
+    /**
+     * close order
+     *
+     * @param orderId   order id
+     * @return  int
+     */
+    int closeOrder(String orderId);
+
 }

@@ -32,7 +32,7 @@ public class RedisUtils {
     /**
      * save key,value
      */
-    private void set(String key, String value) {
+    public void set(String key, String value) {
         stringRedisTemplate.opsForValue().set(key, value);
     }
 
