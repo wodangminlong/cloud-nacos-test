@@ -19,7 +19,7 @@ public class OrderIdUtils {
     @Resource
     private RedisUtils redisUtils;
 
-    public synchronized String getOrderId() {
+    public String getOrderId() {
         String key = "ORDER_ID";
         Long incrValue = redisUtils.incr(key, 1);
         Calendar calendar = Calendar.getInstance();
