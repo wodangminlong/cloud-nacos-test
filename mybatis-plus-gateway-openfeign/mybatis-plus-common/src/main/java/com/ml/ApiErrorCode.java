@@ -41,6 +41,6 @@ public class ApiErrorCode {
     public static final ApiErrorCode REQUESTS_ARE_TOO_FREQUENT = new ApiErrorCode(4002, "REQUESTS ARE TOO FREQUENT");
     public static final ApiErrorCode FORBIDDEN = new ApiErrorCode(4003, "FORBIDDEN REQUEST");
     public static final ApiErrorCode THE_GOODS_HAVE_BEEN_SOLD_OUT = new ApiErrorCode(4004, "THE_GOODS_HAVE_BEEN_SOLD_OUT");
-
+    public static final ApiErrorCode OPERATION_IS_TOO_FREQUENT = new ApiErrorCode(4005, "OPERATION IS TOO FREQUENT");
 
 }

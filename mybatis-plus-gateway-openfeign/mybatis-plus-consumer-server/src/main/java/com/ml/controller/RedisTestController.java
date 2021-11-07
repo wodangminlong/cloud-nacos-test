@@ -32,10 +32,10 @@ public class RedisTestController extends ExceptionAdvice {
     /**
      * redis test set
      *
-     * @param id    id
-     * @param name  name
-     * @param expire    expire
-     * @return  ApiResponse
+     * @param id     id
+     * @param name   name
+     * @param expire expire
+     * @return ApiResponse
      */
     @GetMapping("set/{id}/{name}/{expire}")
     public ApiResponse redisTestSet(@PathVariable(name = "id") String id,
@@ -48,8 +48,8 @@ public class RedisTestController extends ExceptionAdvice {
     /**
      * redis test get
      *
-     * @param id    id
-     * @return  ApiResponse
+     * @param id id
+     * @return ApiResponse
      */
     @GetMapping("get/{id}")
     public ApiResponse redisTestGet(@PathVariable(name = "id") String id) {
@@ -60,9 +60,9 @@ public class RedisTestController extends ExceptionAdvice {
     /**
      * redis test increment
      *
-     * @param id    id
+     * @param id        id
      * @param incrValue incrValue
-     * @return  ApiResponse
+     * @return ApiResponse
      */
     @GetMapping("incr/{id}/{incrValue}")
     public ApiResponse redisTestIncrement(@PathVariable(name = "id") String id,
@@ -74,9 +74,9 @@ public class RedisTestController extends ExceptionAdvice {
     /**
      * redis test decrement
      *
-     * @param id    id
+     * @param id        id
      * @param decrValue decrValue
-     * @return  ApiResponse
+     * @return ApiResponse
      */
     @GetMapping("decr/{id}/{decrValue}")
     public ApiResponse redisTestDecrement(@PathVariable(name = "id") String id,
@@ -88,8 +88,8 @@ public class RedisTestController extends ExceptionAdvice {
     /**
      * redis test delete
      *
-     * @param id    id
-     * @return  ApiResponse
+     * @param id id
+     * @return ApiResponse
      */
     @GetMapping("delete/{id}")
     public ApiResponse redisTestDelete(@PathVariable(name = "id") String id) {
@@ -123,9 +123,11 @@ public class RedisTestController extends ExceptionAdvice {
         if (StringUtils.isNotBlank(surplusGoodsNumStr) && Long.parseLong(surplusGoodsNumStr) <= 0) {
             return soldOut(goodId);
         }
-        while (true) {
-            String keyPrefix = "order_";
-            try {
+        long timeout = 5000L;
+        long start = System.currentTimeMillis();
+        String keyPrefix = "order_";
+        try {
+            for (; ; ) {
                 // try to get lock
                 boolean getLock = redisUtils.lock(keyPrefix + goodId, keyPrefix + goodId, 500 * 1000L);
                 if (getLock) {
@@ -138,22 +140,21 @@ public class RedisTestController extends ExceptionAdvice {
                     log.info("user get goods , surplusGoodsNum: {}", surplusGoodsNum);
                     return testMqFeignClient.orderAdd(orderIdUtils.getOrderId(), goodId);
                 }
-                log.warn("can not get lock, sleep 20 millisecond...");
-                Thread.sleep(20L);
-            } catch (InterruptedException e) {
-                log.error("redisTestOrder has InterruptedException: ", e);
-                Thread.currentThread().interrupt();
-            } finally {
-                redisUtils.releaseLock(keyPrefix + goodId);
+                long end = System.currentTimeMillis() - start;
+                if (end >= timeout) {
+                    return ApiResponse.error(ApiErrorCode.OPERATION_IS_TOO_FREQUENT);
+                }
             }
+        } finally {
+            redisUtils.releaseLock(keyPrefix + goodId);
         }
     }
 
     /**
      * sold out
      *
-     * @param goodId    good id
-     * @return  ApiResponse
+     * @param goodId good id
+     * @return ApiResponse
      */
     private ApiResponse soldOut(String goodId) {
         log.info("the goods have been sold out");
