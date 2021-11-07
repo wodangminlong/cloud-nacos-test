@@ -123,7 +123,7 @@ public class RedisTestController extends ExceptionAdvice {
         if (StringUtils.isNotBlank(surplusGoodsNumStr) && Long.parseLong(surplusGoodsNumStr) <= 0) {
             return soldOut(goodId);
         }
-        long timeout = 5000L;
+        long timeout = 1500L;
         long start = System.currentTimeMillis();
         String keyPrefix = "order_";
         try {
