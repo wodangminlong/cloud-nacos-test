@@ -109,8 +109,8 @@
         <producerConfig>bootstrap.servers=${KAFKA_HOME}</producerConfig>
         <!-- don't wait for a broker to ack the reception of a batch.  -->
         <producerConfig>acks=0</producerConfig>
-        <!-- wait up to 1000ms and collect log messages before sending them as a batch -->
-        <producerConfig>linger.ms=1000</producerConfig>
+        <!-- wait up to 1ms and collect log messages before sending them as a batch -->
+        <producerConfig>linger.ms=1</producerConfig>
         <!-- even if the producer buffer runs full, do not block the application but start to drop messages -->
         <!--<producerConfig>max.block.ms=0</producerConfig>-->
         <producerConfig>block.on.buffer.full=false</producerConfig>
@@ -133,13 +133,13 @@
         <deliveryStrategy class="com.github.danielwegener.logback.kafka.delivery.AsynchronousDeliveryStrategy" />
         <deliveryStrategy class="com.github.danielwegener.logback.kafka.delivery.BlockingDeliveryStrategy">
             <!-- wait indefinitely until the kafka producer was able to send the message -->
-            <timeout>0</timeout>
+            <timeout>10</timeout>
         </deliveryStrategy>
         <producerConfig>bootstrap.servers=${KAFKA_HOME}</producerConfig>
         <!-- don't wait for a broker to ack the reception of a batch.  -->
         <producerConfig>acks=0</producerConfig>
-        <!-- wait up to 1000ms and collect log messages before sending them as a batch -->
-        <producerConfig>linger.ms=1000</producerConfig>
+        <!-- wait up to 1ms and collect log messages before sending them as a batch -->
+        <producerConfig>linger.ms=1</producerConfig>
         <!-- even if the producer buffer runs full, do not block the application but start to drop messages -->
         <producerConfig>max.block.ms=0</producerConfig>
         <appender-ref ref="ERROR_FILE" />
