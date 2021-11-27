@@ -1,6 +1,7 @@
 package com.ml.util;
 
 import com.alibaba.druid.pool.DruidDataSourceFactory;
+import io.seata.rm.datasource.DataSourceProxy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -87,10 +88,10 @@ public class DruidUtils {
         druidMap.put(DruidDataSourceFactory.PROP_POOLPREPAREDSTATEMENTS, "true");
         druidMap.put(DruidDataSourceFactory.PROP_FILTERS, "stat");
         if (isMaster) {
-            masterDataSource = DruidDataSourceFactory.createDataSource(druidMap);
+            masterDataSource = new DataSourceProxy(DruidDataSourceFactory.createDataSource(druidMap));
             return masterDataSource;
         }
-        slaveDataSource = DruidDataSourceFactory.createDataSource(druidMap);
+        slaveDataSource = new DataSourceProxy(DruidDataSourceFactory.createDataSource(druidMap));
         return slaveDataSource;
     }
 
