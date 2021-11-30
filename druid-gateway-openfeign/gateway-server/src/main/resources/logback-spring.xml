@@ -170,7 +170,7 @@
     </root>
 
     <!--debug 日志级别-->
-    <logger name="com.jiuyi" level="debug">
+    <logger name="com.ml" level="debug">
         <appender-ref ref="FILE"/>
         <appender-ref ref="ERROR_FILE"/>
         <appender-ref ref="kafkaAppender"/>
