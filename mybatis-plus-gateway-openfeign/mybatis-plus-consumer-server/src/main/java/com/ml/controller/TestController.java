@@ -4,6 +4,7 @@ import com.ml.ApiResponse;
 import com.ml.exception.ExceptionAdvice;
 import com.ml.openfeign.TestFeignClient;
 import com.ml.openfeign.TestMqFeignClient;
+import com.ml.service.TestService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -60,6 +61,16 @@ public class TestController extends ExceptionAdvice {
     @GetMapping("test3")
     public ApiResponse test3(@NotBlank(message = "name cannot be empty") String name) {
         return testMqFeignClient.test(name);
+    }
+
+    @Resource
+    private TestService testService;
+
+    @GetMapping("test4")
+    public ApiResponse test4() throws InterruptedException {
+        testService.testAsync();
+        log.info("test4 return success...");
+        return ApiResponse.success();
     }
 
 }
