@@ -4,6 +4,7 @@ import com.ml.ApiResponse;
 import com.ml.exception.ExceptionAdvice;
 import com.ml.openfeign.TestFeignClient;
 import com.ml.openfeign.TestMqFeignClient;
+import com.ml.service.TestService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -76,6 +77,16 @@ public class TestController extends ExceptionAdvice {
     @DeleteMapping("test/{id}")
     public ApiResponse testDelete(@PathVariable(name = "id") Long id) {
         return testFeignClient.testDelete(id);
+    }
+
+    @Resource
+    private TestService testService;
+
+    @GetMapping("get")
+    public ApiResponse get() throws InterruptedException {
+        testService.testAsync();
+        log.info("get return...");
+        return ApiResponse.success();
     }
 
 }
