@@ -1,6 +1,7 @@
 package com.ml.openfeign;
 
 import com.ml.ApiResponse;
+import com.ml.model.SystemLog;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -69,5 +70,14 @@ public interface TestFeignClient {
      */
     @GetMapping("addSecKill/{goodId}")
     ApiResponse addSecKill(@PathVariable(name = "goodId") String goodId);
+
+    /**
+     * addSystemLog
+     *
+     * @param systemLog systemLog
+     * @return  ApiResponse
+     */
+    @PostMapping("addSystemLog")
+    ApiResponse addSystemLog(@RequestBody SystemLog systemLog);
 
 }

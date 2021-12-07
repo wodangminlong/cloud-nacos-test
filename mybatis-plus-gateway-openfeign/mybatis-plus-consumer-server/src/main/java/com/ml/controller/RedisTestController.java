@@ -3,6 +3,7 @@ package com.ml.controller;
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.ml.ApiErrorCode;
 import com.ml.ApiResponse;
+import com.ml.aspect.Log;
 import com.ml.exception.ExceptionAdvice;
 import com.ml.openfeign.TestMqFeignClient;
 import com.ml.util.OrderIdUtils;
@@ -37,6 +38,7 @@ public class RedisTestController extends ExceptionAdvice {
      * @param expire expire
      * @return ApiResponse
      */
+    @Log("redis test set")
     @GetMapping("set/{id}/{name}/{expire}")
     public ApiResponse redisTestSet(@PathVariable(name = "id") String id,
                                     @PathVariable(name = "name") String name,
@@ -51,6 +53,7 @@ public class RedisTestController extends ExceptionAdvice {
      * @param id id
      * @return ApiResponse
      */
+    @Log("redis test get")
     @GetMapping("get/{id}")
     public ApiResponse redisTestGet(@PathVariable(name = "id") String id) {
         String name = redisUtils.get(id);
@@ -64,6 +67,7 @@ public class RedisTestController extends ExceptionAdvice {
      * @param incrValue incrValue
      * @return ApiResponse
      */
+    @Log("redis test increment")
     @GetMapping("incr/{id}/{incrValue}")
     public ApiResponse redisTestIncrement(@PathVariable(name = "id") String id,
                                           @PathVariable(name = "incrValue") long incrValue) {
@@ -78,6 +82,7 @@ public class RedisTestController extends ExceptionAdvice {
      * @param decrValue decrValue
      * @return ApiResponse
      */
+    @Log("redis test decrement")
     @GetMapping("decr/{id}/{decrValue}")
     public ApiResponse redisTestDecrement(@PathVariable(name = "id") String id,
                                           @PathVariable(name = "decrValue") long decrValue) {
@@ -91,6 +96,7 @@ public class RedisTestController extends ExceptionAdvice {
      * @param id id
      * @return ApiResponse
      */
+    @Log("redis test delete")
     @GetMapping("delete/{id}")
     public ApiResponse redisTestDelete(@PathVariable(name = "id") String id) {
         redisUtils.delete(id);
@@ -103,6 +109,7 @@ public class RedisTestController extends ExceptionAdvice {
     @Resource
     private OrderIdUtils orderIdUtils;
 
+    @Log("good init")
     @GetMapping("good/{id}")
     public ApiResponse goodInit(@PathVariable(name = "id") String id) {
         int initNum = 10;
@@ -110,6 +117,7 @@ public class RedisTestController extends ExceptionAdvice {
         return ApiResponse.success();
     }
 
+    @Log("good add")
     @GetMapping("good/{id}/{num}")
     public ApiResponse goodAdd(@PathVariable(name = "id") String id,
                                @PathVariable(name = "num") Long num) {
@@ -117,6 +125,7 @@ public class RedisTestController extends ExceptionAdvice {
         return ApiResponse.success(goodAddResult);
     }
 
+    @Log("redis test order")
     @GetMapping("order/{goodId}")
     public ApiResponse redisTestOrder(@PathVariable(name = "goodId") String goodId) {
         String surplusGoodsNumStr = redisUtils.get(goodId);
