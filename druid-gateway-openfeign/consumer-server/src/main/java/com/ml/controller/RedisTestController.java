@@ -4,6 +4,7 @@ import com.alibaba.cloud.commons.lang.StringUtils;
 import com.ml.ApiErrorCode;
 import com.ml.ApiResponse;
 import com.ml.aspect.Log;
+import com.ml.aspect.RedisLock;
 import com.ml.exception.ExceptionAdvice;
 import com.ml.openfeign.TestMqFeignClient;
 import com.ml.util.OrderIdUtils;
@@ -126,37 +127,20 @@ public class RedisTestController extends ExceptionAdvice {
     }
 
     @Log("order")
+    @RedisLock
     @GetMapping("order/{goodId}")
     public ApiResponse redisTestOrder(@PathVariable(name = "goodId") String goodId) {
         String surplusGoodsNumStr = redisUtils.get(goodId);
         if (StringUtils.isNotBlank(surplusGoodsNumStr) && Long.parseLong(surplusGoodsNumStr) <= 0) {
             return soldOut(goodId);
         }
-        long timeout = 1500L;
-        long start = System.currentTimeMillis();
-        String keyPrefix = "order_";
-        try {
-            for (; ; ) {
-                // try to get lock
-                boolean getLock = redisUtils.lock(keyPrefix + goodId, keyPrefix + goodId, 500 * 1000L);
-                if (getLock) {
-                    log.info("get lock");
-                    long surplusGoodsNum = redisUtils.decr(goodId, 1L);
-                    if (surplusGoodsNum < 0) {
-                        redisUtils.set(goodId, String.valueOf(0));
-                        return soldOut(goodId);
-                    }
-                    log.info("user get goods , surplusGoodsNum: {}", surplusGoodsNum);
-                    return testMqFeignClient.orderAdd(orderIdUtils.getOrderId(), goodId);
-                }
-                long end = System.currentTimeMillis() - start;
-                if (end >= timeout) {
-                    return ApiResponse.error(ApiErrorCode.OPERATION_IS_TOO_FREQUENT);
-                }
-            }
-        } finally {
-            redisUtils.releaseLock(keyPrefix + goodId);
+        long surplusGoodsNum = redisUtils.decr(goodId, 1L);
+        if (surplusGoodsNum < 0) {
+            redisUtils.set(goodId, String.valueOf(0));
+            return soldOut(goodId);
         }
+        log.info("user get goods , surplusGoodsNum: {}", surplusGoodsNum);
+        return testMqFeignClient.orderAdd(orderIdUtils.getOrderId(), goodId);
     }
 
     /**

@@ -16,4 +16,13 @@ public class Constant {
     public static final String TEST_APPID = "7a1df69775f54d44";
     public static final String TEST_APP_SECRET = "1c67451358824bf2a3c28a8308a6f23a";
 
+    /**
+     * default order lock key prefix
+     */
+    public static final String DEFAULT_ORDER_LOCK_KEY_PREFIX = "DEFAULT_ORDER_LOCK_KEY_PREFIX_";
+    /**
+     * default order lock time
+     */
+    public static final long DEFAULT_ORDER_LOCK_TIME = 500 * 1000L;
+
 }
